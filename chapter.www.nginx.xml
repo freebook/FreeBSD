@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="nginx">
+	<title>nginx</title>
+	<screen>
+pkg_add -r nginx
+
+location / {
+        root   /usr/local/www/nginx;
+        index  index.html index.htm;
+}
+
+location ~ \.php$ {
+        root           html;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /usr/local/www/nginx$fastcgi_script_name;
+        include        fastcgi_params;
+}
+	</screen>
+	<section>
+		<title>port install</title>
+		<screen>
+# cd /usr/ports/www/nginx
+
+# make install
+
+HTTP_MODULE
+HTTP_REWRITE_MODULE
+HTTP_STATUS_MODULE
+		</screen>
+		<section>
+			<title>php</title>
+			<para>ports 安装 php-fpm 适合 php-5.2.10, 高于这个版本请跳过这节, 采用编译安装。</para>
+			<screen>
+# cd /usr/ports/lang/php5
+# make install
+			</screen>
+			<para>extensions</para>
+			<screen>
+# cd /usr/ports/lang/php5-extensions/
+# make install
+# ln -s /usr/local/etc/php.ini-production /usr/local/etc/php.ini
+			</screen>
+			<para>php-fpm - FastCGI Process Manager</para>
+			<para>homepage: http://php-fpm.org/downloads/freebsd-port/</para>
+			<screen>
+			<![CDATA[
+# tar xvzf php-5.2.10-fpm-0.5.13.tar.gz --directory=/usr/ports/lang
+x php5-fpm/
+x php5-fpm/files/
+x php5-fpm/Makefile
+x php5-fpm/distinfo
+x php5-fpm/pkg-descr
+x php5-fpm/pkg-plist
+x php5-fpm/files/php-fpm.sh.in
+x php5-fpm/files/patch-scripts::phpize.in
+x php5-fpm/files/patch-TSRM_threads.m4
+x php5-fpm/files/patch-Zend::zend.h
+x php5-fpm/files/patch-Zend_zend_list.c
+x php5-fpm/files/patch-Zend_zend_list.h
+x php5-fpm/files/patch-ext_standard_array.c
+x php5-fpm/files/patch-ext_standard_basic_functions.c
+x php5-fpm/files/patch-ext_standard_dns.h
+x php5-fpm/files/patch-ext_standard_image.c
+x php5-fpm/files/patch-php.ini-dist
+x php5-fpm/files/patch-php.ini-recommended
+x php5-fpm/files/patch-main::php_config.h.in
+x php5-fpm/files/patch-main_SAPI.c
+x php5-fpm/files/patch-acinclude.m4
+x php5-fpm/files/patch-configure.in
+
+# cd /usr/ports/lang/php5-fpm/ && make install
+			]]>
+			</screen>
+			<section>
+				<title>php-fpm</title>
+				<screen>
+				<![CDATA[
+                        Unix user of processes
+                        <value name="user">www</value>
+
+                        Unix group of processes
+                        <value name="group">www</value>
+				]]>
+				</screen>
+			</section>
+		</section>
+
+		<section>
+			<title>/etc/rc.conf</title>
+			<screen>
+vim /etc/rc.conf
+php_fpm_enable="YES"
+nginx_enable="YES"
+			</screen>
+		</section>
+		<section>
+			<title>/usr/local/etc/nginx/nginx.conf</title>
+			<screen>
+ee /usr/local/etc/nginx/nginx.conf
+
+        location / {
+            root   /www;
+            index  index.html index.htm index.php;
+        }
+
+        location ~ \.php$ {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /www$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+			</screen>
+		</section>
+
+		<section>
+			<title>start</title>
+			<screen>
+/usr/local/etc/rc.d/php-fpm start
+/usr/local/etc/rc.d/nginx start
+			</screen>
+		</section>
+	</section>
+
+	<section id="php-fpm">
+		<title>编译安装 php 与 php-fpm</title>
+		<para><tip>PHP 5.3.3 后续版本已经集成php-fpm 不需要打补丁再安装.</tip></para>
+		<section>
+			<title>php-5.2.x</title>
+			<para>http://php-fpm.org/downloads/</para>
+			<screen>
+			<![CDATA[
+[root@freebsd1:~] cd /usr/src/
+[root@freebsd1:/usr/src]
+
+wget http://php-fpm.org/downloads/php-5.2.14-fpm-0.5.14.diff.gz
+wget http://www.php.net/get/php-5.2.14.tar.gz/from/cn.php.net/mirror
+
+[root@freebsd1:/usr/src] tar zxf php-5.2.14.tar.gz
+
+gzip -cd php-5.2.14-fpm-0.5.14.diff.gz | patch -d php-5.2.14 -p1
+
+[root@freebsd1:/usr/src] cd php-5.2.14
+
+
+./configure --prefix=/usr/local/php-5.2.14 \
+--with-config-file-path=/usr/local/php-5.2.14/etc \
+--enable-fastcgi --enable-fpm \
+--with-curl \
+--with-gd \
+--with-jpeg-dir=/usr/lib64 \
+--with-iconv \
+--with-mcrypt \
+--with-zlib \
+--with-pear \
+--with-xmlrpc \
+--with-openssl \
+--with-mysql \
+--with-mysqli \
+--with-pdo-mysql \
+--enable-zip \
+--enable-sockets \
+--enable-soap \
+--enable-mbstring \
+--enable-magic-quotes \
+--enable-inline-optimization \
+--enable-xml \
+--enable-ftp
+
+make && make install
+			]]>
+			</screen>
+			<para>配置php.ini与php-fpm.conf</para>
+			<screen>
+			<![CDATA[
+cp php.ini-dist /usr/local/php-5.2.14/etc/php.ini
+/usr/local/php-5.2.14/etc/php.ini
+
+include_path = ".:/www/includes:/usr/local/php-5.2.14/lib/php"
+
+
+vim /usr/local/php-5.2.14/etc/php-fpm.conf
+
+    <value name="owner">www</value>
+    <value name="group">www</value>
+
+
+<value name="user">www</value>
+<value name="group">www</value>
+
+
+/usr/local/php-5.2.14/sbin/php-fpm start
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>php-5.3.x</title>
+			<screen>
+安装zlib
+===========================================================
+./configure
+make test
+make install
+
+安装gd
+===========================================================
+cd /usr/ports/graphic/gd
+make install
+
+安装libpng
+===========================================================
+cd /usr/ports/graphics/png
+make install
+===========================================================
+
+安装jpeg
+===========================================================
+cd /usr/ports/graphics/jpeg
+make install
+===========================================================
+
+安装freetype
+===========================================================
+cd /usr/ports/print/freetype
+make install
+			</screen>
+			<screen>
+./configure --prefix=/usr/local/php-5.3.5 \
+--with-config-file-path=/usr/local/php-5.3.5/etc \
+--with-config-file-scan-dir=/usr/local/php-5.3.5/etc/conf.d \
+--enable-fpm \
+--with-fpm-user=www \
+--with-fpm-group=www \
+--with-pear \
+--with-curl \
+--with-gd \
+--with-jpeg-dir \
+--with-png-dir \
+--with-freetype-dir \
+--with-iconv \
+--with-mcrypt \
+--with-mhash \
+--with-zlib \
+--with-xmlrpc \
+--with-xsl \
+--with-openssl \
+--with-mysql \
+--with-mysqli \
+--with-pdo-mysql \
+
+--disable-debug \
+--enable-zip \
+--enable-sockets \
+--enable-soap \
+--enable-mbstring \
+--enable-magic-quotes \
+--enable-inline-optimization \
+--enable-memory-limit
+--enable-xml \
+
+--enable-ftp \
+--enable-exif \
+--enable-wddx \
+--enable-bcmath \
+--enable-calendar \
+--enable-sqlite-utf8 \
+--enable-shmop \
+--enable-dba \
+--enable-sysvsem \
+--enable-sysvshm \
+--enable-sysvmsg
+
+make
+make install
+			</screen>
+			<para>php.ini</para>
+			<screen>
+include_path=.:/usr/local/php-5.3.5/lib/php
+			</screen>
+			<para>php-fpm.conf</para>
+			<screen>
+cp /usr/local/php-5.3.5/etc/php-fpm.conf.default /usr/local/php-5.3.5/etc/php-fpm.conf
+cp /usr/src/php-5.3.5/sapi/fpm/init.d.php-fpm /usr/local/etc/rc.d/php-fpm
+chmod +x /usr/local/etc/rc.d/php-fpm
+
+vim /usr/local/php-5.3.5/etc/php-fpm.conf
+pid = run/php-fpm.pid
+
+user = www
+group = www
+
+pm.start_servers = 20
+pm.min_spare_servers = 5
+pm.max_spare_servers = 35
+			</screen>
+		</section>
+	</section>
+
+</chapter>

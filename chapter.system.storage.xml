@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="device">
+	<title>Storage</title>
+	<section>
+		<title>Device Names</title>
+		<para>The following is a list of physical storage devices supported in FreeBSD, and the device names associated with them.</para>
+		<screen>
+Physical Disk Naming Conventions
+
+Drive device name		Drive type	
+ad						IDE hard drives	
+acd						IDE CDROM drives	
+da						SCSI hard drives and USB Mass storage devices	
+cd						SCSI CDROM drives	
+mcd for Mitsumi CD-ROM and scd for Sony CD-ROM devices		Assorted non-standard CDROM drives	
+fd						Floppy drives	
+sa						SCSI tape drives	
+ast						IDE tape drives	
+fla for DiskOnChip® Flash device		Flash drives	
+aacd for Adaptec® AdvancedRAID, mlxd and mlyd for Mylex®, amrd for AMI MegaRAID®, idad for Compaq Smart RAID, twed for 3ware® RAID.			RAID drives	
+		</screen>
+	</section>
+</section>	

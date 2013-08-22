@@ -1,0 +1,407 @@
+<part id="system">
+	<title>System Administration</title>
+	&chapter.system.packages.xml;
+<chapter id="system.terminal">
+	<title>terminal</title>
+	<section>
+		<title>分辨率</title>
+		<para>使用下面的命令获得本机支持的显示模式</para>
+		<screen>
+		<![CDATA[
+vidcontrol -i mode < /dev/ttyv0
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+root@netkiller:/root # vidcontrol -i mode < /dev/ttyv0
+    mode#     flags   type    size       font      window      linear buffer
+------------------------------------------------------------------------------
+  0 (0x000) 0x00000001 T 40x25           8x8   0xb8000 32k 32k 0x00000000 32k
+  1 (0x001) 0x00000001 T 40x25           8x8   0xb8000 32k 32k 0x00000000 32k
+  2 (0x002) 0x00000001 T 80x25           8x8   0xb8000 32k 32k 0x00000000 32k
+  3 (0x003) 0x00000001 T 80x25           8x8   0xb8000 32k 32k 0x00000000 32k
+  4 (0x004) 0x00000003 G 320x200x2 C     8x8   0xb8000 32k 32k 0x00000000 32k
+  5 (0x005) 0x00000003 G 320x200x2 C     8x8   0xb8000 32k 32k 0x00000000 32k
+  6 (0x006) 0x00000003 G 640x200x1 C     8x8   0xb8000 32k 32k 0x00000000 32k
+ 13 (0x00d) 0x00000003 G 320x200x4 4     8x8   0xa0000 64k 64k 0x00000000 256k
+ 14 (0x00e) 0x00000003 G 640x200x4 4     8x8   0xa0000 64k 64k 0x00000000 256k
+ 16 (0x010) 0x00000003 G 640x350x2 2     8x14  0xa0000 64k 64k 0x00000000 128k
+ 18 (0x012) 0x00000003 G 640x350x4 4     8x14  0xa0000 64k 64k 0x00000000 256k
+ 19 (0x013) 0x00000001 T 40x25           8x14  0xb8000 32k 32k 0x00000000 32k
+ 20 (0x014) 0x00000001 T 40x25           8x14  0xb8000 32k 32k 0x00000000 32k
+ 21 (0x015) 0x00000001 T 80x25           8x14  0xb8000 32k 32k 0x00000000 32k
+ 22 (0x016) 0x00000001 T 80x25           8x14  0xb8000 32k 32k 0x00000000 32k
+ 23 (0x017) 0x00000001 T 40x25           8x16  0xb8000 32k 32k 0x00000000 32k
+ 24 (0x018) 0x00000001 T 80x25           8x16  0xb8000 32k 32k 0x00000000 32k
+ 26 (0x01a) 0x00000003 G 640x480x4 4     8x16  0xa0000 64k 64k 0x00000000 256k
+ 27 (0x01b) 0x00000003 G 640x480x4 4     8x16  0xa0000 64k 64k 0x00000000 256k
+ 28 (0x01c) 0x00000003 G 320x200x8 P     8x8   0xa0000 64k 64k 0x00000000 64k
+ 30 (0x01e) 0x00000001 T 80x50           8x8   0xb8000 32k 32k 0x00000000 32k
+ 32 (0x020) 0x00000001 T 80x30           8x16  0xb8000 32k 32k 0x00000000 32k
+ 34 (0x022) 0x00000001 T 80x60           8x8   0xb8000 32k 32k 0x00000000 32k
+ 37 (0x025) 0x00000003 G 320x240x8 V     8x8   0xa0000 64k 64k 0x00000000 256k
+112 (0x070) 0x00000000 T 80x43           8x8   0xb8000 32k 32k 0x00000000 32k
+113 (0x071) 0x00000001 T 80x43           8x8   0xb8000 32k 32k 0x00000000 32k
+257 (0x101) 0x0000000f G 640x480x8 P     8x16  0xa0000 64k 64k 0x80000000 300k
+259 (0x103) 0x0000000f G 800x600x8 P     8x16  0xa0000 64k 64k 0x80000000 487k
+261 (0x105) 0x0000000f G 1024x768x8 P    8x16  0xa0000 64k 64k 0x80000000 768k
+273 (0x111) 0x0000000f G 640x480x16 D    8x16  0xa0000 64k 64k 0x80000000 600k
+274 (0x112) 0x0000000f G 640x480x32 D    8x16  0xa0000 64k 64k 0x80000000 1200k
+276 (0x114) 0x0000000f G 800x600x16 D    8x16  0xa0000 64k 64k 0x80000000 937k
+277 (0x115) 0x0000000f G 800x600x32 D    8x16  0xa0000 64k 64k 0x80000000 1875k
+279 (0x117) 0x0000000f G 1024x768x16 D   8x16  0xa0000 64k 64k 0x80000000 1536k
+280 (0x118) 0x0000000f G 1024x768x32 D   8x16  0xa0000 64k 64k 0x80000000 3072k
+		]]>
+		</screen>
+		<para>使用下面命令改变当前屏幕的分辨率 280 为 1024x768x32</para>
+		<screen>
+# vidcontrol MODE_280
+		</screen>
+		<para>启动时生效，就在 /etc/rc.conf 加入</para>
+		<screen>
+allscreens_flags="MODE_280"
+		</screen>
+	</section>
+	<section id="saver">
+		<title>屏幕保护</title>
+		<para>方法一，编辑 /etc/rc.conf 文件加入</para>
+		<screen>
+blanktime=”60″
+saver=”daemon”
+		</screen>
+		<para>方法二，sysinstall</para>
+		<screen>
+		<![CDATA[
+选择
+Configure——Console——Saver—–Timeout（设置屏保时间60秒）
+在选则 Daemon
+		]]>
+		</screen>
+		<para>屏保文件</para>
+		<screen>
+# ls /boot/kernel/*saver* | grep -v symbols
+/boot/kernel/beastie_saver.ko
+/boot/kernel/blank_saver.ko
+/boot/kernel/daemon_saver.ko
+/boot/kernel/dragon_saver.ko
+/boot/kernel/fade_saver.ko
+/boot/kernel/fire_saver.ko
+/boot/kernel/green_saver.ko
+/boot/kernel/logo_saver.ko
+/boot/kernel/rain_saver.ko
+/boot/kernel/snake_saver.ko
+/boot/kernel/star_saver.ko
+/boot/kernel/warp_saver.ko
+		</screen>
+		<para>屏保预览</para>
+		<screen>
+# kldload logo_saver
+# kldload fire_saver
+# kldload rain_saver
+		</screen>
+		<para>kldload 不能重复运行，已经载入的屏保不能再重新载入，使用下面命令查看详情。</para>
+		<screen>
+# kldstat
+Id Refs Address            Size     Name
+ 1   22 0xffffffff80200000 1323388  kernel
+ 5    1 0xffffffff81612000 861      snake_saver.ko
+ 6    1 0xffffffff81613000 a2d      fire_saver.ko
+ 7    1 0xffffffff81614000 e89      dragon_saver.ko
+ 8    1 0xffffffff81615000 11ad     daemon_saver.ko
+ 9    1 0xffffffff81617000 4dd      star_saver.ko
+10    1 0xffffffff81618000 9cd      rain_saver.ko
+11    1 0xffffffff81619000 c4d      warp_saver.ko
+		</screen>
+	</section>
+	<section>
+		<title>键盘设置</title>
+		<para>使用linux的用户转到BSD很不适应终端键盘设置</para>
+		<screen>
+		<![CDATA[
+bindkey "^[[1~" beginning-of-line
+bindkey "^[[4~" end-of-line
+bindkey "^[[3~" delete-char
+		]]>
+		</screen>
+	</section>
+</chapter>
+<chapter id="system.start">
+	<title>FreeBSD 开机启动</title>
+	<para>将开机运行脚本写入</para>
+	<screen>
+/etc/rc.local
+	</screen>
+	<para>将关机前运行脚本写入</para>
+	<screen>
+/etc/rc.shutdown.local
+	</screen>
+	<para>测试</para>
+	<screen>
+/etc/rc.d/local start
+/etc/rc.d/local stop
+	</screen>
+	<section id="rc.conf">
+		<title>/etc/rc.conf</title>
+		<para>修改 /etc/rc.conf 生效</para>
+		<screen>
+sh /etc/rc
+		</screen>
+	</section>
+</chapter>
+<chapter id="system.date">
+	<title>Date</title>
+	<screen>
+# date -v -1d +%Y%m%d
+20060326
+# date -v -1m +%Y%m%d
+20060227
+# date -v -1y +%Y%m%d
+20050327
+	</screen>
+</chapter>
+<chapter id="shell">
+	<title>shell</title>
+	<section id="bash">
+		<title>Bash</title>
+		<para>install bash</para>
+		<screen>
+freebsd# cd /usr/ports/shells/bash
+freebsd# make install clean
+		</screen>
+		<para>change shell</para>
+		<screen>
+$ chsh -s /usr/local/bin/bash
+Password:
+chsh: user information updated
+$ exit
+		</screen>
+	</section>
+	<section id="zsh">
+		<title>zsh</title>
+		<screen>
+freebsd# pkg_add -r zsh
+freebsd# chsh -s /usr/local/bin/zsh
+		</screen>
+		<section>
+			<title>初始化 zsh</title>
+			<screen>
+# compinstall -Uz compinit
+# compinit
+# compinstall
+			</screen>
+		</section>
+		<section>
+			<title>prompt</title>
+			<para>zsh prompt colors:</para>
+			<screen>
+autoload colors; colors
+export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
+			</screen>
+		</section>
+
+	</section>
+</chapter>
+
+<chapter id="account">
+	<title>Users and Basic Account Management</title>
+	<section>
+		<title>添加用户</title>
+		<screen>
+# pw useradd www
+# passwd www
+		</screen>
+		<para>添加新用户jerry并允许他su到root用户</para>
+		<screen>
+# pw useradd jerry -G wheel
+# passwd jerry
+		</screen>
+		<screen>
+# pw useradd -n tom -s /bin/csh -m
+# passwd tom
+		</screen>
+	</section>
+	<section>
+		<title>删除用户</title>
+		<para>rmuser 命令</para>
+		<screen>
+root@freebsd:~ # pw adduser test
+root@freebsd:~ # rmuser test
+Matching password entry:
+
+test:*:1002:1002::0:0:User :/home/test:/bin/sh
+
+Is this the entry you wish to remove? y
+Remove user's home directory (/home/test)? y
+Removing user (test): mailspool home passwd.
+		</screen>
+		<para>pw userdel 命令</para>
+		<screen>
+root@freebsd:~ # pw adduser test
+root@freebsd:~ # pw userdel test
+		</screen>
+		<screen>
+# pw userdel -n tom -r
+		</screen>
+	</section>
+	<section>
+		<title>修改用户信息</title>
+		<screen>
+root@freebsd:~ # chpass neo
+#Changing user information for neo.
+Login: neo
+Password: $6$d9faZkqxd3xQ5AqB$hqAXYv4xbZKz11AHqrva8WoCDstruFmqW2d3Lhzu.9s36tuAiqVfOaNSy9mDFP5I.VaKWhQUjUEgiXF183uVm0
+Uid [#]: 1001
+Gid [# or name]: 1001
+Change [month day year]:
+Expire [month day year]:
+Class:
+Home directory: /home/neo
+Shell: /bin/sh
+Full Name: neo chen
+Office Location:
+Office Phone:
+Home Phone:
+Other information:
+		</screen>
+	</section>
+	<section id="su">
+		<title>su - root</title>
+		<para>add a user to wheel group</para>
+		<screen>
+		<![CDATA[
+root@freebsd:~ # pw usermod neo -G wheel
+root@freebsd:~ # id neo
+uid=1001(neo) gid=1001(neo) groups=1001(neo),0(wheel)
+
+freebsd# grep 'wheel' /etc/group
+wheel:*:0:root,neo
+		]]>
+		</screen>
+	</section>
+
+	<section  id="user.profile">
+		<title>profile</title>
+		<section>
+			<title>shell</title>
+				<screen>
+Finally, change your account to use zsh as your default shell
+FreeBSD users:
+# chpass -s /usr/local/bin/zsh
+				</screen>
+		</section>
+		<section>
+			<title>Changing user information</title>
+			<screen>
+#Changing user information for neo.
+Shell: /usr/local/bin/zsh
+Full Name: Neo Chen
+Office Location:
+Office Phone:
+Home Phone:
+Other information:
+			</screen>
+		</section>
+	</section>
+	<section id="passwd">
+		<title>passwd file</title>
+		<screen>freebsd 不能直接改/etc/passwd 需要使用 vipw，否则不生效</screen>
+		<screen>
+# vipw
+		</screen>
+	</section>
+</chapter>
+
+<chapter id="system.network">
+	<title>Network</title>
+	<screen>
+vi /etc/rc.conf
+	</screen>
+	<section id="dhcp">
+		<title>DHCP</title>
+		<screen>
+hostname="freebse.example.com"
+ifconfig_em0="DHCP"
+		</screen>
+	</section>
+	<section id="ipaddr">
+		<title>IP Address</title>
+		<screen>
+hostname="freebse.example.com"
+ifconfig_em0="inet 192.168.3.71  netmask 255.255.255.0"
+defaultrouter="192.168.3.1"
+		</screen>
+	</section>
+	<section id="alias">
+		<title>alias</title>
+		<screen>
+		<![CDATA[
+[root@freebsd0:~] ifconfig bce0 alias 172.16.1.81 netmask 255.255.255.0
+[root@freebsd0:~] ifconfig bce0
+bce0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=c01bb<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,JUMBO_MTU,VLAN_HWCSUM,TSO4,VLAN_HWTSO,LINKSTATE>
+        ether 00:22:19:5f:52:0b
+        inet 172.16.1.27 netmask 0xffffff00 broadcast 172.16.1.255
+        inet 172.16.1.81 netmask 0xffffff00 broadcast 172.16.1.255
+        media: Ethernet autoselect (100baseTX <full-duplex>)
+        status: active
+
+vim /etc/rc.conf
+ifconfig_bce0_alias0="inet 172.16.1.81 netmask 255.255.255.0"
+		]]>
+		</screen>
+	</section>
+	<section id="gateway">
+		<title>Default Gateway</title>
+		<screen>
+defaultrouter="192.168.3.1"
+		</screen>
+	</section>
+	<section id="dns">
+		<title>DNS</title>
+		<screen>
+freebse# cat /etc/resolv.conf
+domain  example.com
+nameserver      202.96.134.133
+		</screen>
+	</section>
+	<section id="netstart">
+		<title>netstart</title>
+		<para>restart network</para>
+		<screen>
+/etc/netstart
+		</screen>
+	</section>
+	<section id="route">
+		<title>Route</title>
+		<para>route table</para>
+		<screen>
+netstat -nr
+		</screen>
+		<para>Default Routes</para>
+		<screen>
+freebsd# route add  default 172.16.0.254
+add net default: gateway 172.16.0.254
+		</screen>
+		<para>添加静态路由</para>
+		<screen>
+route add 172.16.3.0/24 172.16.1.240
+		</screen>
+		<para>编辑/etc/rc.conf使上面命令开机时执行</para>
+		<screen>
+static_routes="static1"
+route_static1="-net 172.16.3.0/24 172.16.1.240"
+		</screen>
+
+	</section>
+</chapter>
+<chapter id="debug">
+	<title>Debug</title>
+	<section id="lsof">
+		<title>lsof - list open files</title>
+		<screen>
+[root@freebsd:~] pkg_add -r lsof
+Fetching ftp://ftp.freebsd.org/pub/FreeBSD/ports/amd64/packages-8.1-release/Latest/lsof.tbz... Done.
+		</screen>
+	</section>
+</chapter>
+</part>

@@ -1,0 +1,22 @@
+<chapter id="database">
+	<title>MySQL</title>
+	<section id="mysql">
+		<title>Installation</title>
+		<screen>
+		<![CDATA[
+pkg_add -r mysql55-server
+pkg_add -r mysql55-client
+pkg_add -r mysql55-scripts
+
+/usr/local/bin/mysql_install_db
+chown -R mysql /var/db/mysql/
+chgrp -R mysql /var/db/mysql/
+/usr/local/bin/mysqld_safe -user=mysql &
+/usr/local/bin/mysqladmin -u root password ‘newpassword’
+
+
+mysql_enable="YES"
+		]]>
+		</screen>
+	</section>
+</chapter>

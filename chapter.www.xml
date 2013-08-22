@@ -1,0 +1,71 @@
+<!-- $LastChangedDate: 2012-11-16 16:09:35 +0800 (Fri, 16 Nov 2012) $ -->
+<part id="www">
+	<title>Web Server</title>
+	&chapter.www.lighttpd.xml;
+	&chapter.www.nginx.xml;
+	&chapter.www.lamp.xml;
+	<chapter id="logs">
+		<title>log</title>
+		<section id="cronolog">
+			<title>cronolog</title>
+			<screen>
+cd /usr/ports/sysutils/cronolog/
+make install clean
+			</screen>
+			<section>
+				<title>Apache</title>
+				<screen>
+CustomLog "|/usr/local/sbin/cronolog /data/log/domain/%Y%m%d.log" combined
+CustomLog "|/usr/local/sbin/cronolog /var/log/www/%Y%m/%d_access_log" combined
+				</screen>
+			</section>
+			<section>
+				<title>Lighttpd</title>
+				<screen>
+accesslog.filename = "| /usr/local/sbin/cronolog /var/log/lighttpd/%Y/%m/%d/access.log"
+				</screen>
+			</section>
+		</section>
+		<section id="logrotate">
+			<title>logrotate</title>
+			<screen>
+
+			</screen>
+		</section>
+	</chapter>
+	<chapter id="cache">
+		<title>Cache</title>
+		<section id="memcache">
+			<title>Memcache</title>
+			<screen>
+cd /usr/ports/databases/memcached; make install clean
+			</screen>
+			<screen>
+vi /etc/rc.conf
+# start memcached
+memcached_enable="YES"
+			</screen>
+			<para>你也可不使用vi，使用下面命令快速添加</para>
+			<screen>
+echo "memcached_enable=\"YES\"" >> /etc/rc.conf
+			</screen>
+			<para>Memcache</para>
+			<screen>
+/usr/local/etc/rc.d/memcached start
+			</screen>
+		</section>
+		<section id="php.memcache">
+			<title>PHP Memcache</title>
+			<screen>
+cd /usr/ports/databases/pecl-memcache; make install clean
+			</screen>
+			<para>确认Memcache是否安装成功</para>
+			<screen>
+cat /usr/local/etc/php/extensions.ini | grep memcache
+
+php -m | grep memcache
+memcache
+			</screen>
+		</section>
+	</chapter>
+</part>

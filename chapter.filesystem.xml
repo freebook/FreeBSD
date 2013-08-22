@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="filesystem">
+	<title>File System</title>
+<chapter id="zfs">
+	<title>ZFS</title>
+	<section id="zfs.enable">
+		<title>初始化</title>
+		<screen>
+echo "zfs_enable=YES" >> /etc/rc.conf
+echo 'daily_status_zfs_enable="YES"' >> /etc/periodic.conf
+
+freebsd# vi /etc/rc.conf
+zfs_enable="YES"
+
+freebsd# /etc/rc.d/zfs faststart
+		</screen>
+	</section>
+	<section id="zfs.basic">
+		<title>Creating a Basic Filesystem</title>
+		<screen>
+# zpool create tank c0t0d0
+# zfs create tank/fs
+
+# mkfile 100m /tank/fs/foo
+# df -h /tank/fs
+Filesystem             size   used  avail capacity  Mounted on
+tank/fs                 80G   100M    80G     1%    /tank/fs
+		</screen>
+		<screen>
+# zpool create tank c0t0d0 c1t0d0
+		</screen>
+	</section>
+	<section id="zfs.zpool">
+		<title>Creating a Storage Pool</title>
+		<section>
+			<title>Mirrored Pool</title>
+			<command># zpool create tank mirror c0t0d0 c0t0d1</command>
+			<screen>
+freebsd# zpool create tank mirror ad1 ad3
+freebsd# zpool status tank
+  pool: tank
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        tank        ONLINE       0     0     0
+          mirror    ONLINE       0     0     0
+            ad1     ONLINE       0     0     0
+            ad3     ONLINE       0     0     0
+
+errors: No known data errors
+
+			</screen>
+		</section>
+		<section>
+			<title>RAID-Z Pool</title>
+			<screen>
+freebsd# zpool create zfs raidz ad1 ad3
+freebsd# zpool status zfs
+  pool: zfs
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        zfs         ONLINE       0     0     0
+          raidz1    ONLINE       0     0     0
+            ad1     ONLINE       0     0     0
+            ad3     ONLINE       0     0     0
+
+errors: No known data errors
+			</screen>
+		</section>
+		<section>
+			<title>Querying Pool Status</title>
+			<para>You can see that your pool was successfully created by using the zpool list command:</para>
+			<screen>
+freebsd# zpool list
+NAME   SIZE   USED  AVAIL    CAP  HEALTH  ALTROOT
+zfs   3.97G   234K  3.97G     0%  ONLINE  -
+			</screen>
+		</section>
+		<section>
+			<title>Destroying Pools</title>
+			<para>Pools are destroyed by using the zpool destroy command. This command destroys the pool even if it contains mounted datasets.</para>
+			<screen>
+# zpool destroy tank
+			</screen>
+			<para>Destroying a Pool With Faulted Devices</para>
+			<screen>
+# zpool destroy tank
+cannot destroy 'tank': pool is faulted
+use '-f' to force destruction anyway
+# zpool destroy -f tank
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.fs">
+		<title>Creating a Filesystem Hierarchy</title>
+		<section>
+			<title>Creating a Filesystem</title>
+			<screen>
+freebsd# zfs create zfs/www
+freebsd# mount
+/dev/ad0s1a on / (ufs, local)
+devfs on /dev (devfs, local, multilabel)
+/dev/ad0s1e on /tmp (ufs, local, soft-updates)
+/dev/ad0s1f on /usr (ufs, local, soft-updates)
+/dev/ad0s1d on /var (ufs, local, soft-updates)
+zfs on /zfs (zfs, local)
+zfs/www on /zfs/www (zfs, local)
+			</screen>
+			<para></para>
+			<screen>
+freebsd# zfs set compression=gzip zfs/www
+			</screen>
+		</section>
+		<section>
+			<title>Setting Quotas</title>
+			<para>we want to give bonwick a quota of 10 Gbytes</para>
+			<screen>
+# zfs set quota=10G tank/home/bonwick
+			</screen>
+		</section>
+		<section>
+			<title>Setting Reservations</title>
+			<screen>
+# zfs set reservation=5G tank/home/moore
+# zfs get reservation tank/home/moore
+NAME             PROPERTY      VALUE                      SOURCE
+tank/home/moore  reservation   5.00G                      local
+			</screen>
+		</section>
+		<section>
+			<title>Querying Filesystem Information</title>
+			<screen>
+freebsd# zfs list
+NAME       USED  AVAIL  REFER  MOUNTPOINT
+tank      97.5K  1.95G    18K  /tank
+tank/neo    18K  1.95G    18K  /tank/neo
+			</screen>
+		</section>
+		<section>
+			<title>Renaming a Filesystem</title>
+			<screen>
+# zfs rename tank/home/maybee tank/ws/maybee
+			</screen>
+		</section>
+		<section>
+			<title>Destroying a Filesystem</title>
+			<screen>
+# zfs destroy tank/home/tabriz
+			</screen>
+			<para></para>
+			<screen>
+# zfs destroy tank/home/ahrens
+cannot unmount 'tank/home/ahrens': Device busy
+
+# zfs destroy -f tank/home/ahrens
+			</screen>
+			<screen>
+# zfs destroy -r tank/home/schrock
+cannot destroy 'tank/home/schrock': filesystem has dependant clones
+use '-R' to destroy the following datasets:
+tank/clones/schrock-clone
+
+# zfs destroy -R tank/home/schrock
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.mount">
+		<title>zfs mount/umount</title>
+		<para>Legacy mount points must be managed through legacy tools. An attempt to use ZFS tools result in an error.</para>
+		<screen>
+# zfs mount pool/home/billm
+cannot mount 'pool/home/billm': legacy mountpoint
+use mount(1M) to mount this filesystem
+# mount -F zfs tank/home/billm
+		</screen>
+		<section>
+			<title>Temporary Mount Properties</title>
+			<screen>
+# zfs mount -o ro tank/home/perrin
+# zfs mount -o remount,noatime tank/home/perrin
+# zfs get atime tank/home/perrin
+NAME             PROPERTY      VALUE                      SOURCE
+tank/home/perrin atime         off                        temporary
+			</screen>
+		</section>
+		<section>
+			<title>Mounting File Systems</title>
+			<para>mount</para>
+			<screen>
+freebsd# zfs mount zfs/www
+freebsd# mount
+/dev/ad0s1a on / (ufs, local)
+devfs on /dev (devfs, local, multilabel)
+/dev/ad0s1e on /tmp (ufs, local, soft-updates)
+/dev/ad0s1f on /usr (ufs, local, soft-updates)
+/dev/ad0s1d on /var (ufs, local, soft-updates)
+zfs on /zfs (zfs, local)
+zfs/www on /zfs/www (zfs, local)
+			</screen>
+			<para>The -a option can be used to mount all ZFS managed filesystems. Legacy managed filesystems are not mounted.</para>
+			<screen>
+# zfs mount -a
+			</screen>
+		</section>
+		<section>
+			<title>Unmounting File Systems</title>
+
+			<para>umount</para>
+			<screen>
+freebsd# zfs umount /zfs/www
+freebsd# mount
+/dev/ad0s1a on / (ufs, local)
+devfs on /dev (devfs, local, multilabel)
+/dev/ad0s1e on /tmp (ufs, local, soft-updates)
+/dev/ad0s1f on /usr (ufs, local, soft-updates)
+/dev/ad0s1d on /var (ufs, local, soft-updates)
+zfs on /zfs (zfs, local)
+			</screen>
+		</section>
+		<section>
+			<title>Legacy Mount Points</title>
+			<screen>
+freebsd# zfs set mountpoint=/tank  tank
+freebsd# zfs mount -a
+freebsd# mount
+/dev/ad0s1a on / (ufs, local)
+devfs on /dev (devfs, local, multilabel)
+/dev/ad0s1e on /tmp (ufs, local, soft-updates)
+/dev/ad0s1f on /usr (ufs, local, soft-updates)
+/dev/ad0s1d on /var (ufs, local, soft-updates)
+tank on /tank (zfs, local)
+
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.sharing">
+		<title>Sharing ZFS File Systems</title>
+		<section>
+			<title>Controlling Share Semantics</title>
+			<screen>
+freebsd# zfs set sharenfs=on zfs/www
+			</screen>
+		</section>
+		<section>
+			<title>Unsharing Filesystems</title>
+			<screen>
+freebsd# zfs unshare zfs/www
+			</screen>
+			<para>This command unshares the zpool filesystem. To unshare all ZFS filesystems on the system, run:</para>
+			<screen>
+freebsd# zfs unshare -a
+			</screen>
+		</section>
+		<section>
+			<title>Sharing Filesystems</title>
+			<screen>
+freebsd# zfs share zfs/www
+			</screen>
+			<para>You can also share all ZFS filesystems on the system:</para>
+			<screen>
+# zfs share -a
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.device">
+		<title>Device Management</title>
+		<section>
+			<title>Adding Devices to a Pool</title>
+			<screen>
+# zpool add scoop mirror c0t1d0 c1t1d0
+			</screen>
+		</section>
+		<section>
+			<title>Onlining and Offlining Devices</title>
+			<section>
+				<title>Taking a Device Offline</title>
+				<screen>
+# zpool offline tank c0t0d0
+bringing device 'c0t0d0' offline
+				</screen>
+			</section>
+			<section>
+				<title>Bringing a Device Online</title>
+				<screen>
+# zpool online tank c0t0d0
+bringing device 'c0t0d0' online
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>Replacing Devices</title>
+			<para>You can replace a device in a storage pool by using the zpool replace command.</para>
+			<screen>
+# zpool replace tank c0t0d0 c0t0d1
+			</screen>
+			<para>In the above example, the previous device, c0t0d0, is replaced by c0t0d1.</para>
+		</section>
+	</section>
+	<section id="zfs.io">
+		<title>I/O Statistics</title>
+		<screen>
+freebsd# zpool iostat
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank        73.5K  1.98G      0      2    119  2.10K
+		</screen>
+		<para></para>
+		<screen>
+freebsd# zpool iostat
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank        73.5K  1.98G      0      2    119  2.10K
+freebsd# zpool iostat tank 2
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank        73.5K  1.98G      0      1     84  1.48K
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+tank        73.5K  1.98G      0      0      0      0
+		</screen>
+		<section>
+			<title>Virtual Device Statistics</title>
+			<screen>
+freebsd# zpool iostat -v
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank        73.5K  1.98G      0      0     45    824
+  mirror    73.5K  1.98G      0      0     45    824
+    ad1         -      -      0      0  1.12K  9.04K
+    ad3         -      -      0      0    778  9.04K
+----------  -----  -----  -----  -----  -----  -----
+			</screen>
+			<screen>
+freebsd# zpool iostat -v tank 5
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank         124K  1.98G      0      0     12    367
+  mirror     124K  1.98G      0      0     12    367
+    ad1         -      -      0      0    297    773
+    ad3         -      -      0      0    270    773
+----------  -----  -----  -----  -----  -----  -----
+
+
+               capacity     operations    bandwidth
+pool         used  avail   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+tank         124K  1.98G      0      0      0      0
+  mirror     124K  1.98G      0      0      0      0
+    ad1         -      -      0      0      0      0
+    ad3         -      -      0      0      0      0
+----------  -----  -----  -----  -----  -----  -----
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.status">
+		<title>Health Status</title>
+		<section>
+			<title>Basic Health Status</title>
+			<screen>
+freebsd# zpool status -x
+all pools are healthy
+freebsd#
+			</screen>
+		</section>
+		<section>
+			<title>Detailed Health Status</title>
+			<screen>
+freebsd# zpool status -x
+all pools are healthy
+freebsd# zpool status -v tank
+  pool: tank
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        tank        ONLINE       0     0     0
+          mirror    ONLINE       0     0     0
+            ad1     ONLINE       0     0     0
+            ad3     ONLINE       0     0     0
+
+errors: No known data errors
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.export">
+		<title>Storage Pool Migration</title>
+		<section>
+			<title>Exporting a Pool</title>
+			<screen>
+# zpool export tank
+			</screen>
+			<screen>
+# zpool export tank
+cannot unmount '/export/home/eschrock': Device busy
+# zpool export -f tank
+			</screen>
+		</section>
+		<section>
+			<title>Importing Pools</title>
+			<screen>
+# zpool import tank
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.get">
+		<title>Querying Properties</title>
+		<screen>
+freebsd# zfs get all tank
+NAME  PROPERTY              VALUE                  SOURCE
+tank  type                  filesystem             -
+tank  creation              Sat Jun 19 17:49 2010  -
+tank  used                  98.5K                  -
+tank  available             1.95G                  -
+tank  referenced            19K                    -
+tank  compressratio         1.00x                  -
+tank  mounted               yes                    -
+tank  quota                 none                   default
+tank  reservation           none                   default
+tank  recordsize            128K                   default
+tank  mountpoint            /tank                  default
+tank  sharenfs              off                    default
+tank  checksum              on                     default
+tank  compression           off                    default
+tank  atime                 on                     default
+tank  devices               on                     default
+tank  exec                  on                     default
+tank  setuid                on                     default
+tank  readonly              off                    default
+tank  jailed                off                    default
+tank  snapdir               hidden                 default
+tank  aclmode               groupmask              default
+tank  aclinherit            restricted             default
+tank  canmount              on                     default
+tank  shareiscsi            off                    default
+tank  xattr                 off                    temporary
+tank  copies                1                      default
+tank  version               3                      -
+tank  utf8only              off                    -
+tank  normalization         none                   -
+tank  casesensitivity       sensitive              -
+tank  vscan                 off                    default
+tank  nbmand                off                    default
+tank  sharesmb              off                    default
+tank  refquota              none                   default
+tank  refreservation        none                   default
+tank  primarycache          all                    default
+tank  secondarycache        all                    default
+tank  usedbysnapshots       0                      -
+tank  usedbydataset         19K                    -
+tank  usedbychildren        79.5K                  -
+tank  usedbyrefreservation  0                      -
+		</screen>
+	</section>
+	<section id="zfs.backup">
+		<title>Backing Up and Restoring ZFS Data</title>
+		<section>
+			<title>Backing Up a ZFS Snapshot</title>
+			<screen>
+			<![CDATA[
+# zfs backup tank/dana@111505 > /dev/rmt/0
+
+# zfs backup pool/fs@snap | gzip > backupfile.gz
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Restoring a ZFS Snapshot</title>
+			<screen>
+			<![CDATA[
+# zfs backup tank/gozer@111105 > /dev/rmt/0
+.
+.
+.
+# zfs restore tank/gozer2@today < /dev/rmt/0
+# zfs rename tank/gozer tank/gozer.old
+# zfs rename tank/gozer2 tank/gozer
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+# zfs rollback tank/dana@111505
+cannot rollback to 'tank/dana@111505': more recent snapshots exist
+use '-r' to force deletion of the following snapshots:
+tank/dana@now
+# zfs rollback -r tank/dana@111505
+# zfs restore tank/dana < /dev/rmt/0
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Remote Replication of a ZFS File System</title>
+			<screen>
+# zfs backup tank/neo@today | ssh newsys zfs restore sandbox/restfs@today
+			</screen>
+		</section>
+	</section>
+	<section id="zfs.snapshot">
+		<title>ZFS Snapshots and Clones</title>
+		<section>
+			<title>ZFS Snapshots</title>
+			<para>filesystem@snapname, volume@snapname</para>
+			<section>
+				<title>Creating ZFS Snapshots</title>
+				<para>The following example creates a snapshot of tank/neo that is named friday.</para>
+				<screen>
+freebsd# zfs snapshot tank/neo@friday
+				</screen>
+			</section>
+			<section>
+				<title>Destroying ZFS Snapshots</title>
+				<para>Snapshots are destroyed by using the zfs destroy command.</para>
+				<screen>
+# zfs destroy tank/home/ahrens@friday
+				</screen>
+			</section>
+			<section>
+				<title>Renaming ZFS Snapshots</title>
+				<screen>
+# zfs rename tank/home/cindys@111205 pool/home/cindys@today
+				</screen>
+			</section>
+			<section>
+				<title>Displaying and Accessing ZFS Snapshots</title>
+				<screen>
+freebsd# zfs list -t snapshot
+NAME              USED  AVAIL  REFER  MOUNTPOINT
+tank/neo@friday      0      -    18K  -
+				</screen>
+			</section>
+			<section>
+				<title>Rolling Back to a Snapshot</title>
+				<screen>
+# zfs rollback pool/home/ahrens@tuesday
+cannot rollback to 'pool/home/ahrens@tuesday': more recent snapshots exist
+use '-r' to force deletion of the following snapshots:
+pool/home/ahrens@wednesday
+pool/home/ahrens@thursday
+# zfs rollback -r pool/home/ahrens@tuesday
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>ZFS Clones</title>
+			<section>
+				<title>Creating a Clone</title>
+				<screen>
+# zfs clone pool/ws/gate@yesterday pool/home/ahrens/bug123
+
+# zfs snapshot projects/newproject@today
+# zfs clone projects/newproject@today projects/teamA/tempuser
+# zfs set sharenfs=on projects/teamA/tempuser
+# zfs set quota=5G projects/teamA/tempuser
+				</screen>
+			</section>
+			<section>
+				<title>Destroying a Clone</title>
+				<para>ZFS clones are destroyed with the zfs destroy command.</para>
+				<screen>
+# zfs destroy pool/home/ahrens/bug123
+				</screen>
+				<para>Clones must be destroyed before the parent snapshot can be destroyed.</para>
+			</section>
+		</section>
+	</section>
+	<section id="zfs.vol">
+		<title>Emulated Volumes</title>
+		<screen>
+# zfs create -V 5gb tank/vol
+		</screen>
+	</section>
+</chapter>
+</part>

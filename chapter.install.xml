@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="install">
+	<title>FreeBSD Install</title>
+	<para></para>
+	<section id="install.welcome">
+		<title>Welcome</title>
+		<graphic  format="png" fileref="images/freebsd-boot.png" srccredit="neo" width="800"/>
+		<para>回车即可</para>
+		<graphic  format="png" fileref="images/freebsd-welcome.png" srccredit="neo" width="800"/>
+		<para>选择 Install 按钮后回车</para>
+		<graphic  format="png" fileref="images/freebsd-keymap-selection.png" srccredit="neo" width="800"/>
+		<para>选择 No</para>
+		<graphic  format="png" fileref="images/freebsd-hostname.png" srccredit="neo" width="800"/>
+		<para>输入 Hostname</para>
+	</section>
+
+	<section id="install.partitioning">
+		<title>partitioning</title>
+		<graphic  format="png" fileref="images/freebsd-distribution-select.png" srccredit="neo" width="800"/>
+		<para>回车即可</para>
+		<graphic  format="png" fileref="images/freebsd-partitioning.png" srccredit="neo" width="800"/>
+		<para>选择 Guided</para>
+		<graphic  format="png" fileref="images/freebsd-partition-entire-disk.png" srccredit="neo" width="800"/>
+		<para>选择 Entire Dist 便是使用整个磁盘，</para>
+		<graphic  format="png" fileref="images/freebsd-partitioning-editor.png" srccredit="neo" width="800"/>
+		<para>使用光标键移动按钮到 Auto 然后回车，表示自动分区</para>
+		<graphic  format="png" fileref="images/freebsd-partitioning-finish.png" srccredit="neo" width="800"/>
+		<para>选择 Finish 回车，完成分区设置</para>
+		<para>再选择 Commit 确认，最后就会格式化磁盘</para>
+		<graphic  format="png" fileref="images/freebsd-archive-extraction.png" srccredit="neo" width="800"/>
+		<para>开始安装</para>
+	</section>
+
+	<section id="install.password">
+		<title>password</title>
+		<graphic  format="png" fileref="images/freebsd-new-password.png" srccredit="neo" width="800"/>
+		<para>设置root密码</para>
+		<graphic  format="png" fileref="images/freebsd-retype-new-password.png" srccredit="neo" width="800"/>
+		<para>确认密码，再输入一次</para>
+	</section>
+	<section id="install.network">
+		<title>network</title>
+		<graphic  format="png" fileref="images/freebsd-network-configuration.png" srccredit="neo" width="800"/>
+		<para>网络接口选择，这是只有一个网卡，如果你有多个网卡，这里应该是一个选择列表</para>
+		<graphic  format="png" fileref="images/freebsd-network-configuration-ipv4.png" srccredit="neo" width="800"/>
+		<para>问你是否开启IPv4 选Yes</para>
+		<graphic  format="png" fileref="images/freebsd-network-configuration-dhcp.png" srccredit="neo" width="800"/>
+		<para>问题是否使用DHCP获取IP地址。这里选择 No</para>
+		<graphic  format="png" fileref="images/freebsd-network-configuration-ip.png" srccredit="neo" width="800"/>
+		<para>输入IP地址，子网掩码，网关</para>
+		<graphic  format="png" fileref="images/freebsd-network-configuration-dns.png" srccredit="neo" width="800"/>
+		<para>设置DNS服务器</para>
+	</section>
+	<section id="install.timezone">
+		<title>timezone</title>
+		<graphic  format="png" fileref="images/freebsd-local.png" srccredit="neo" width="800"/>
+		<para>问你是否使用UTC时间，选择 No</para>
+		<graphic  format="png" fileref="images/freebsd-timezone.png" srccredit="neo" width="800"/>
+		<para>选择时区，我一般使用Hongkong 或者 Harbin</para>
+		<graphic  format="png" fileref="images/freebsd-timezone-asia-hongkong.png" srccredit="neo" width="800"/>
+		<para>回车</para>
+		<graphic  format="png" fileref="images/freebsd-timezone-confirmation.png" srccredit="neo" width="800"/>
+		<para>选择 Yes</para>
+	</section>
+	<section id="install.complete">
+		<title>complete</title>
+		<para>额外的软件包安装</para>
+		<graphic  format="png" fileref="images/freebsd-system.png" srccredit="neo" width="800"/>
+		<para>sshd当然需要，还有ntpd, moused 也不错可以在控制台上使用鼠标，可以快速复制粘贴控制台上的内容。</para>
+		<graphic  format="png" fileref="images/freebsd-dumpdev.png" srccredit="neo" width="800"/>
+		<para>对于普通用户，这个基本用不到 No</para>
+		<graphic  format="png" fileref="images/freebsd-adduser.png" srccredit="neo" width="800"/>
+		<para>添加一个普通帐号，选择Yes</para>
+		<graphic  format="png" fileref="images/freebsd-adduser-ok.png" srccredit="neo" width="800"/>
+		<para>根据提示输入即可</para>
+		<graphic  format="png" fileref="images/freebsd-final.png" srccredit="neo" width="800"/>
+		<para>到此 FreeBSD 安装完成，如果你想修改前面那些配置可以在这里修改。这个界面让很多菜鸟搞得蒙头转向，挑不出安全程序，一边又一遍的安装FreeBSD. 这里你放心的 Exit 菜单上回车即可。</para>
+		<graphic  format="png" fileref="images/freebsd-manual-configuration.png" srccredit="neo" width="800"/>
+		<para>选择 Yes 回车</para>
+		<graphic  format="png" fileref="images/freebsd-complete.png" srccredit="neo" width="800"/>
+		<para>选择 Reboot 回车</para>
+	</section>
+	<section id="freebsd.init">
+		<title>FreeBSD 初始化设置</title>
+		<para>刚刚添加了一个neo用户，但这个用户并不能 su - root， 默认配置下 FreeBSD在安全性方面做得比Linux好很多，你需要做下面的操作将neo 添加到 wheel组才能使用su命令</para>
+		<screen>
+# pw usermod neo -G wheel
+# id neo
+uid=1001(neo) gid=1001(neo) groups=1001(neo),0(wheel)
+		</screen>
+	</section>
+	<section id="sysinstall">
+		<title>sysinstall 工具</title>
+		<para>例如安装 FreeBSD src 源码包</para>
+		<screen>
+sysinstall -> Configure -> Distributions -> src -> ALL -> Install from a FreeBSD CD/DVD
+		</screen>
+	</section>
+</chapter>

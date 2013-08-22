@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="packages">
+	<title>Packages System</title>
+	<section id="packages.pkg">
+		<title>Using the Packages System</title>
+		<section>
+			<title>PACKAGESROOT / PKG_PATH 环境变量</title>
+			<screen>
+setenv PACKAGESROOT ftp://ftp.freebsdchina.org
+pkg_add -r libxml2 gmake autoconf262
+
+
+export PKG_PATH=ftp://ftp.freebsd.org/pub/FreeBSD/8.2/packages/i386/
+pkg_add mysql-server php5-fastcgi php5-gd-5.2.6-no_x11 lighttpd-1.4.19p3 nginx pecl-APC
+			</screen>
+		</section>
+		<section>
+			<title>Installing a Package</title>
+			<screen>
+# pkg_add -r lsof
+			</screen>
+		</section>
+		<section>
+			<title>Managing Packages</title>
+			<screen>
+# pkg_info
+libiconv-1.13.1_1   A character set conversion library
+libxml2-2.7.7       XML parser library for GNOME
+lighttpd-1.4.26_3   A secure, fast, compliant, and very flexible Web Server
+pcre-8.02           Perl Compatible Regular Expressions library
+php5-5.3.2_1        PHP Scripting Language
+pkg-config-0.23_1   A utility to retrieve information about installed libraries
+spawn-fcgi-1.6.3    spawn-fcgi is used to spawn fastcgi applications
+			</screen>
+			<screen>
+freebsd0# pkg_version
+libiconv                            =
+libxml2                             =
+lighttpd                            =
+pcre                                =
+php5                                =
+pkg-config                          =
+spawn-fcgi                          =
+
+
+#  pkg_version -v
+libiconv-1.13.1_1                   =   up-to-date with port
+libxml2-2.7.7                       =   up-to-date with port
+lighttpd-1.4.26_3                   =   up-to-date with port
+pcre-8.02                           =   up-to-date with port
+php5-5.3.2_1                        =   up-to-date with port
+php5-ctype-5.3.2_1                  =   up-to-date with port
+php5-dom-5.3.2_1                    =   up-to-date with port
+php5-extensions-1.4                 =   up-to-date with port
+php5-filter-5.3.2_1                 =   up-to-date with port
+php5-hash-5.3.2_1                   =   up-to-date with port
+php5-iconv-5.3.2_1                  =   up-to-date with port
+php5-json-5.3.2_1                   =   up-to-date with port
+php5-pdo-5.3.2_1                    =   up-to-date with port
+php5-pdo_sqlite-5.3.2_1             =   up-to-date with port
+php5-posix-5.3.2_1                  =   up-to-date with port
+php5-session-5.3.2_1                =   up-to-date with port
+php5-simplexml-5.3.2_1              =   up-to-date with port
+php5-sqlite-5.3.2_1                 =   up-to-date with port
+php5-tokenizer-5.3.2_1              =   up-to-date with port
+php5-xml-5.3.2_1                    =   up-to-date with port
+php5-xmlreader-5.3.2_1              =   up-to-date with port
+php5-xmlwriter-5.3.2_1              =   up-to-date with port
+pkg-config-0.23_1                   =   up-to-date with port
+spawn-fcgi-1.6.3                    =   up-to-date with port
+sqlite3-3.6.23.1_1                  =   up-to-date with port
+
+			</screen>
+		</section>
+		<section>
+			<title>Deleting a Package</title>
+			<screen>
+# pkg_delete php5-5.3.2_1
+			</screen>
+		</section>
+	</section>
+	<section id="freebsd.upgrade">
+		<title>Updating and Upgrading FreeBSD</title>
+		<section>
+			<title>update</title>
+			<para>安全补丁</para>
+			<screen>
+# freebsd-update fetch
+# freebsd-update install
+			</screen>
+			<para>如果出现错误回滚</para>
+			<screen>
+# freebsd-update rollback
+			</screen>
+			<screen>
+freebsd# rehash
+freebsd# freebsd-update fetch
+Looking up update.FreeBSD.org mirrors... 3 mirrors found.
+Fetching public key from update5.FreeBSD.org... done.
+Fetching metadata signature for 8.0-RELEASE from update5.FreeBSD.org... done.
+Fetching metadata index... done.
+Fetching 2 metadata files... done.
+Inspecting system... done.
+Preparing to download files... done.
+Fetching 35 patches.....10....20....30.. done.
+Applying patches... done.
+
+The following files will be updated as part of updating to 8.0-RELEASE-p3:
+/boot/kernel/ip_mroute.ko
+/boot/kernel/ip_mroute.ko.symbols
+/boot/kernel/kernel
+/boot/kernel/kernel.symbols
+/boot/kernel/krpc.ko
+/boot/kernel/krpc.ko.symbols
+/boot/kernel/nfsclient.ko
+/boot/kernel/nfsclient.ko.symbols
+/boot/kernel/zfs.ko
+/boot/kernel/zfs.ko.symbols
+/etc/mtree/BSD.var.dist
+/lib/libzpool.so.2
+/libexec/ld-elf.so.1
+/usr/bin/dig
+/usr/bin/host
+/usr/bin/nslookup
+/usr/bin/nsupdate
+/usr/lib/libopie.a
+/usr/lib/libopie.so.6
+/usr/lib/libssl.a
+/usr/lib/libssl.so.6
+/usr/lib/libzpool.a
+/usr/sbin/dnssec-dsfromkey
+/usr/sbin/dnssec-keyfromlabel
+/usr/sbin/dnssec-keygen
+/usr/sbin/dnssec-signzone
+/usr/sbin/freebsd-update
+/usr/sbin/jail
+/usr/sbin/lwresd
+/usr/sbin/named
+/usr/sbin/named-checkconf
+/usr/sbin/named-checkzone
+/usr/sbin/named-compilezone
+/usr/sbin/ntpd
+/usr/sbin/rndc-confgen
+/usr/share/man/man2/mount.2.gz
+/usr/share/man/man2/nmount.2.gz
+/usr/share/man/man2/unmount.2.gz
+/var/db/freebsd-update
+/var/db/mergemaster.mtree
+
+freebsd# freebsd-update install
+Installing updates... done.
+			</screen>
+		</section>
+		<section>
+			<title>upgrade</title>
+			<para>寻找版本</para>
+			<para>http://update5.freebsd.org/</para>
+			<para>升级至9.1-RELEASE</para>
+			<screen>
+freebsd# freebsd-update upgrade -r 9.1-RELEASE
+			</screen>
+			<screen>
+Looking up update.FreeBSD.org mirrors... 3 mirrors found.
+Fetching metadata signature for 9.1-RC3 from update5.freebsd.org... done.
+Fetching metadata index... done.
+Fetching 1 metadata files... done.
+Inspecting system... done.
+
+The following components of FreeBSD seem to be installed:
+kernel/generic world/base world/games world/lib32
+
+The following components of FreeBSD do not seem to be installed:
+src/src world/doc
+
+Does this look reasonable (y/n)? y
+
+Fetching metadata signature for 9.1-RELEASE from update5.freebsd.org... done.
+Fetching metadata index... done.
+Fetching 1 metadata patches. done.
+Applying metadata patches... done.
+Fetching 1 metadata files... done.
+Inspecting system... done.
+Fetching files from 9.1-RC3 for merging... done.
+Preparing to download files...
+
+			</screen>
+			<screen>
+freebsd# freebsd-update install
+			</screen>
+		</section>
+		<section>
+			<title>update ports</title>
+			<para>update your port tree by typing following commands:</para>
+			<screen>
+# portsnap fetch
+# portsnap update
+			</screen>
+		</section>
+	</section>
+	<section id="freebsd.ports">
+		<title>ports</title>
+		<section>
+			<title>install</title>
+			<screen>
+# cd /usr/ports/lang/php5
+# make install
+			</screen>
+			<para>reinstall</para>
+			<screen>
+# make reinstall
+			</screen>
+		</section>
+		<section>
+			<title>remove</title>
+			<screen>
+# make deinstall
+			</screen>
+			<para>如果用make install clean 安装，请用 pkg_delete 卸载</para>
+		</section>
+		<section>
+			<title>config menu</title>
+			<screen>
+# cd /usr/ports/lang/php5
+# make config
+# make install
+			</screen>
+		</section>
+	</section>
+	<section id="pkgng">
+		<title>PKGNG - Pkgng is the Next Generation package management tool for FreeBSD.</title>
+		<para>https://mebsd.com/make-build-your-freebsd-word/pkgng-first-look-at-freebsds-new-package-manager.html</para>
+		<para>http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/pkgng-intro.html</para>
+		<para>https://wiki.freebsd.org/pkgng</para>
+		<section>
+			<title>安装 pkgng</title>
+			<para>方法一：</para>
+			<screen>
+			<![CDATA[
+# /usr/sbin/pkg
+The package management tool is not yet installed on your system.
+Do you want to fetch and install it now? [y/N]: y
+Bootstrapping pkg please wait
+Installing pkg-1.0.11... done
+If you are upgrading from the old package format, first run:
+
+  # pkg2ng
+usage: pkg [-v] [-d] [-j <jail name or id>|-c <chroot path>] <command> [<args>]
+
+Global options supported:
+	-d             Increment debug level
+	-j             Execute pkg(1) inside a jail(8)
+	-c             Execute pkg(1) inside a chroot(8)
+	-v             Display pkg(1) version
+
+Commands supported:
+	add            Registers a package and installs it on the system
+	audit          Reports vulnerable packages
+	autoremove     Removes orphan packages
+	backup         Backs-up and restores the local package database
+	check          Checks for missing dependencies and database consistency
+	clean          Cleans old packages from the cache
+	create         Creates software package distributions
+	delete         Deletes packages from the database and the system
+	fetch          Fetches packages from a remote repository
+	help           Displays help information
+	info           Displays information about installed packages
+	install        Installs packages from remote package repositories
+	query          Queries information about installed packages
+	register       Registers a package into the local database
+	remove         Deletes packages from the database and the system
+	repo           Creates a package repository catalogue
+	rquery         Queries information in repository catalogues
+	search         Performs a search of package repository catalogues
+	set            Modifies information about packages in the local database
+	shell          Opens a debug shell
+	shlib          Displays which packages link against a specific shared library
+	stats          Displays package database statistics
+	update         Updates package repository catalogues
+	updating       Displays UPDATING information for a package
+	upgrade        Performs upgrades of packaged software distributions
+	version        Displays the versions of installed packages
+	which          Displays which package installed a specific file
+
+For more information on the different commands see 'pkg help <command>'.
+			]]>
+			</screen>
+			<para>方法二：</para>
+			<screen>
+# portsnap fetch update
+# cd /usr/ports/ports-mgmt/pkg
+# make
+# make install clean
+			</screen>
+			<para>方法三</para>
+			<screen>
+# pkg_add -r pkg
+			</screen>
+		</section>
+		<section>
+			<title>转换数据库</title>
+			<para>运行 pkg2ng 命令</para>
+			<screen>
+# pkg2ng
+			</screen>
+			<para>设置 make.conf 文件</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/make.conf <<EOF
+
+WITH_PKGNG=yes
+EOF
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>install</title>
+			<para>安装包</para>
+			<screen>
+# pkg install curl
+			</screen>
+		</section>
+		<section>
+			<title>delete</title>
+			<para>删除包</para>
+			<screen>
+# pkg delete curl
+			</screen>
+		</section>
+		<section>
+			<title>info</title>
+			<para>显示所有包信息</para>
+			<screen>
+pkg info
+			</screen>
+			<para>显示包之间的依赖关系</para>
+			<screen>
+# pkg info -d subversion
+subversion-1.7.7 depends on:
+expat-2.0.1_2
+pkgconf-0.8.9
+sqlite3-3.7.14.1
+gdbm-1.9.1
+db42-4.2.52_5
+libiconv-1.14
+gettext-0.18.1.1
+			</screen>
+			<para>显示包中的文件</para>
+			<screen>
+# pkg info -l subversion
+subversion-1.7.7 owns the following files:
+/usr/local/bin/svn
+/usr/local/bin/svnadmin
+/usr/local/bin/svndumpfilter
+/usr/local/bin/svnlook
+/usr/local/bin/svnrdump
+/usr/local/bin/svnserve
+/usr/local/bin/svnsync
+/usr/local/bin/svnversion
+/usr/local/etc/rc.d/svnserve
+			</screen>
+		</section>
+		<section>
+			<title>query</title>
+			<screen>
+# pkg query "Package name = %n, Version = %v, Size = %sh" libxml2
+Package name = libxml2, Version = 2.7.8_5, Size = 4 MB
+
+# pkg query -a "Package name = %n, Version = %v, Size = %sh"
+			</screen>
+			<screen>
+			<![CDATA[
+# pkg query "\
+	package[%n]\n\
+	version[%v]\n\
+	origin[%o]\n\
+	prefix[%p]\n\
+	maintainer[%m]\n\
+	comment[%c]\n\
+	www[%w]\n\
+	licenselogic[%l]\n\
+	flatsize[%sh]\n\
+	flatsizebytes[%sb]\n\
+	orphan[%a]\n\
+	message[%M]\n\
+" libxml2
+
+typescript package[libxml2]
+
+typescript version[2.7.8_5]
+
+typescript origin[textproc/libxml2]
+
+typescript prefix[/usr/local]
+
+typescript maintainer[gnome@FreeBSD.org]
+
+typescript comment[XML parser library for GNOME]
+
+typescript www[http://xmlsoft.org/]
+
+typescript licenselogic[single]
+
+typescript flatsize[4 MB]
+
+typescript flatsizebytes[4258960]
+
+typescript orphan[0]
+
+typescript message[]
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>upgrade</title>
+			<screen>
+# pkg upgrade
+			</screen>
+		</section>
+	</section>
+</chapter>
+
+<chapter id="editors">
+	<title>编辑器 (editors)</title>
+	<section id="vim">
+		<title>vim</title>
+		<screen>
+# pkg_add -r vim
+		</screen>
+		<screen>
+# cd /usr/ports/editors/vim
+# make install
+		</screen>
+	</section>
+
+</chapter>

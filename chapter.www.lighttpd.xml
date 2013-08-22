@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="lighttpd">
+	<title>Lighttpd</title>
+	<section id="lighttpd.install">
+		<title>install lighttpd</title>
+		<screen>
+			<![CDATA[
+# cd /usr/ports/www/
+# pkg_add -r lighttpd
+			]]>
+		</screen>
+		<para>/etc/rc.conf</para>
+		<screen>
+			<![CDATA[
+[root@freebsd ~]# echo lighttpd_enable=\"YES\" >> /etc/rc.conf
+
+[root@freebsd ~]# cat /etc/rc.conf
+lighttpd_enable="YES"
+			]]>
+		</screen>
+		<screen>
+fastcgi.server             = ( ".php" =>
+                               ( "localhost" =>
+                                 (
+                                   "socket" => "/tmp/php-fastcgi.socket",
+                                   "bin-path" => "/usr/local/bin/php-cgi"
+                                 )
+                               )
+                            )
+
+		</screen>
+		<!--
+fcgiphp_enable="YES"                     # enable FastCGI+PHP
+fcgiphp_bin_path="/usr/local/bin/php-cgi"    # absolute path to the PHP binary
+fcgiphp_user="www"                       # switch to user
+fcgiphp_group="www"                      # switch to group
+fcgiphp_children="10"                    # number of PHP childs to spawn
+fcgiphp_port="8002"                      # bind to tcp-port on localhost
+fcgiphp_socket="/tmp/php-fastcgi.sock"   # bind to unix domain socket
+fcgiphp_env="SHELL PATH USER"            # allowed environment variables separated by spaces
+fcgiphp_max_requests="500"               # number of request server by a single php-process until is will be restarted
+fcgiphp_addr="localhost"                 # adresses where PHP should access server connections from
+		 -->
+		<screen>
+server.document-root        = "/www/htdocs/"
+server.errorlog             = "/www/logs/lighttpd.error.log"
+accesslog.filename          = "/www/logs/access.log"
+
+chown -R www:www /www/
+# touch /www/logs/lighttpd.error.log
+# chown www:www /www/logs/lighttpd.error.log
+
+
+		</screen>
+		<para>start</para>
+		<screen>
+			<![CDATA[
+freebsd0# /usr/local/etc/rc.d/spawn-fcgi start
+Starting spawn_fcgi.
+spawn-fcgi: child spawned successfully: PID: 79056
+freebsd0# /usr/local/etc/rc.d/spawn-fcgi stop
+Stopping spawn_fcgi.
+Waiting for PIDS: 79056.
+freebsd0# /usr/local/etc/rc.d/spawn-fcgi start
+Starting spawn_fcgi.
+spawn-fcgi: child spawned successfully: PID: 79084
+freebsd0# /usr/local/etc/rc.d/spawn-fcgi restart
+Stopping spawn_fcgi.
+Starting spawn_fcgi.
+spawn-fcgi: child spawned successfully: PID: 79109
+
+
+# /usr/local/etc/rc.d/lighttpd start
+Starting lighttpd.
+			]]>
+		</screen>
+	</section>
+	<section id="lighttpd.php5">
+		<title>install php5</title>
+		<screen>
+# pkg_add -r php5
+# pkg_add -r php5-extensions
+# pkg_add -r php5-curl
+# pkg_add -r php5-mcrypt
+# pkg_add -r php5-mbstring
+
+# pkg_add -r php5-mysql
+# pkg_add -r php5-gd
+
+# pkg_add -r php5-zlib
+# pkg_add -r php5-zip
+		</screen>
+	</section>
+	<section id="lighttpd.xcache">
+		<title>xcache</title>
+		<screen>
+# portsnap fetch update
+# cd /usr/ports/www/xcache
+# make install clean
+		</screen>
+		<para>Enable xache</para>
+		<screen>
+# cp /usr/local/share/examples/xcache/xcache.ini /usr/local/etc/php/
+# cd /usr/local/etc/php/
+# vi xcache.ini
+		</screen>
+		<para>Type the following command to restart lighttpd</para>
+		<screen>
+# /usr/local/etc/rc.d/lighttpd restart
+		</screen>
+	</section>
+	<section id="lighttpd.zend">
+		<title>Zend Optimizer</title>
+		<screen>
+
+# cd /usr/ports/devel/ZendOptimizer/
+# make
+# cd /usr/ports/devel/ZendOptimizer/work/ZendOptimizer-*
+#./install-tty
+		</screen>
+		<para>不要选择apache</para>
+
+		<para>php.ini</para>
+		<screen>
+# vi /usr/local/etc/php.ini
+
+[Zend]
+zend_extension_manager.optimizer=/usr/local/Zend/lib/Optimizer-3.3.0
+zend_extension_manager.optimizer_ts=/usr/local/Zend/lib/Optimizer_TS-3.3.0
+zend_optimizer.version=3.3.0a
+zend_extension=/usr/local/Zend/lib/ZendExtensionManager.so
+zend_extension_ts=/usr/local/Zend/lib/ZendExtensionManager_TS.so
+		</screen>
+	</section>
+</chapter>

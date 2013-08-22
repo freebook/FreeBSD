@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="jail">
+	<title>Jails</title>
+	<section>
+		<title>ezjail</title>
+		<screen>
+二、设定网卡
+# vi /etc/rc.conf,因为我的网卡设备是bce0，所以设定如下：
+ifconfig_bceo="inet 192.168.1.18 netmask 255.255.255.0"
+ifconfig_bce0_alias0="inet 192.168.1.28 netmask 255.255.255.255" ##此处全为255,不可错了
+
+三、安装ezjail
+# portsnap fetch extract
+# cd /usr/ports/sysutils/ezjail
+# make install clean
+# ezjail-admin update -p -i
+# ezjail-admin create -r /usr/jails/www www.example.com 192.168.1.28
+# echo ezjail_enable="YES" >>/etc/rc.conf
+		</screen>
+	</section>
+</chapter>

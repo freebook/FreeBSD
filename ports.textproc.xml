@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ports.textproc">
+	<title>textproc</title>
+	<section id="docbook">
+		<title>docbook</title>
+		<screen>
+cd /usr/ports/textproc/libxslt
+make install
+
+cd /usr/ports/textproc/docbook-xml
+make install
+
+cd /usr/ports/textproc/docbook-xsl
+make install
+		</screen>
+		<para>通过xsltproc生成html文件</para>
+		<screen>
+$ xsltproc /usr/local/share/xsl/docbook/xhtml/chunk.xsl book.xml
+		</screen>
+	</section>
+</chapter>
+<chapter id="ports.devel">
+	<title>devel</title>
+	<section id="subversion">
+		<title>subversion</title>
+		<screen>
+cd /usr/ports/devel/subversion
+make install
+		</screen>
+	</section>
+</chapter>
