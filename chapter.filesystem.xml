@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part id="filesystem">
 	<title>File System</title>
+<chapter id="filesystem.winfs">
+	<title>Windows 文件系统</title>
+	<section id="msdos">
+		<title>msdos/fat16 文件系统</title>
+		<section>
+			<title>分区格式化</title>
+			<para>进入 sysinstall 给硬盘分区</para>
+			<screen>
+sysinstall - confgure - fdisk
+			</screen>
+			<para>格式化分区</para>
+			<screen>
+newfs_msdos /dev/da0s1
+			</screen>
+		</section>
+		<section>
+			<title>挂载 msdoc 分区</title>
+			<screen>
+mount -t msdos /dev/da0s1 /mnt
+			</screen>
+			<para></para>
+			<screen>
+mount_msdosfs /dev/da0s1 /mnt
+			</screen>
+		</section>
+	</section>
+</chapter>
 <chapter id="zfs">
 	<title>ZFS</title>
 	<section id="zfs.enable">
