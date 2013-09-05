@@ -1,24 +1,16 @@
 XSLTPROC = /usr/bin/xsltproc
-DSSSL = /home/neo/workspace/Document/Docbook/docbook-xsl/docbook.xsl
+DSSSL = ../docbook-xsl/docbook.xsl
 TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp ebook.$html.XXXXXX)
-DOCBOOK=/home/neo/workspace/Document/Docbook
-PUBLIC_HTML=/home/neo/workspace/public_html
+WORKSPACE=~/workspace
+PROJECT=FreeBSD
+DOCBOOK=freebsd
+PUBLIC_HTML=~/public_html
+HTML=$(PUBLIC_HTML)/$(DOCBOOK)
+HTMLHELP=$(PUBLIC_HTML)/htmlhelp/${DOCBOOK}/chm
 
-define reset
-	@mkdir -p ${PUBLIC_HTML}/$(1)
-	@find ${PUBLIC_HTML}/$(1) -type f -iname "*.html" -exec rm -rf {} \;
-endef
+all: html htmlhelp
 
-define book
-	@rsync -au $(DOCBOOK)/common/docbook.css $(PUBLIC_HTML)/$(2)/
-	@$(XSLTPROC) -o $(PUBLIC_HTML)/$(2)/ $(DSSSL) $(DOCBOOK)/$(1)/book.xml
-	@$(shell test -d $(PUBLIC_HTML)/$(2)/images && find $(PUBLIC_HTML)/$(2)/images/ -type f -exec rm -rf {} \;)
-	@$(shell test -d $(DOCBOOK)/$(1)/images && rsync -au --exclude=.svn $(DOCBOOK)/$(1)/images $(PUBLIC_HTML)/$(2)/)
-endef
-
-all: freebsd
-
-freebsd: 
+html: 
 	@XSLTPROC="xsltproc \
 		--stringparam html.stylesheet docbook.css \
 		--stringparam use.id.as.filename 1 \
@@ -26,9 +18,20 @@ freebsd:
 		--stringparam section.autolabel 1 \
 		--stringparam css.decoration 1 \
 	"
-	@cp docbook.css ${PUBLIC_HTML}/$@/
+	@cp docbook.css ${PUBLIC_HTML}/$(DOCBOOK)/
 		
-	@$(XSLTPROC) -o $(PUBLIC_HTML)/$@/ $(DSSSL) book.xml
+	@$(XSLTPROC) -o $(HTML)/ $(DSSSL) book.xml
+	@$(shell test -d $(HTML)/images && find $(HTML)/images/ -type f -exec rm -rf {} \;)
+	@$(shell test -d images && rsync -au --exclude=.svn images $(HTML)/)
+
+htmlhelp:
+	${XSLTPROC} -o $(HTMLHELP)/ --stringparam htmlhelp.chm ../$(PROJECT).chm ../docbook-xsl/htmlhelp/template.xsl $(WORKSPACE)/${PROJECT}/book.xml
+	@../common/chm.sh $(HTMLHELP)
+	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/htmlhelp.hhp < $(HTMLHELP)/htmlhelp.hhp
+	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/toc.hhc < $(HTMLHELP)/toc.hhc
+	@$(shell test -d $(HTMLHELP)/images && find $(HTMLHELP)/images/ -type f -exec rm -rf {} \;)
+	@$(shell test -d images && rsync -au --exclude=.svn images $(HTMLHELP)/)
+	@cp $(PUBLIC_HTML)/images/by-nc-sa.png $(HTMLHELP)/images
 
 show:
 	@echo $(DOCBOOK)
