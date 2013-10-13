@@ -41,6 +41,10 @@ zfs_enable="YES"
 
 freebsd# /etc/rc.d/zfs faststart
 		</screen>
+		<para>另一种临时启动方法</para>
+		<screen>
+# /etc/rc.d/zfs onestart
+		</screen>
 	</section>
 	<section id="zfs.basic">
 		<title>Creating a Basic Filesystem</title>
