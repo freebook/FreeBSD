@@ -4,19 +4,31 @@
 		<title>Installation</title>
 		<screen>
 		<![CDATA[
-pkg_add -r mysql55-server
-pkg_add -r mysql55-client
-pkg_add -r mysql55-scripts
+pkg_add -r mysql56-server
+pkg_add -r mysql56-client
 
+/usr/local/etc/rc.d/mysql-server onestart
+/usr/local/bin/mysqladmin -u root password 'newpassword'
+
+cat >> /etc/rc.conf <<EOF
+mysql_enable="YES"
+EOF
+		]]>
+		</screen>
+		<!-- 
 /usr/local/bin/mysql_install_db
 chown -R mysql /var/db/mysql/
 chgrp -R mysql /var/db/mysql/
-/usr/local/bin/mysqld_safe -user=mysql &
-/usr/local/bin/mysqladmin -u root password ‘newpassword’
+/usr/local/bin/mysqld_safe -user=mysql &		
+		 -->
+		<para>To install using the ports system:</para>
+		<screen>
+cd /usr/ports/databases/mysql56-server/
+make install clean
 
+cd /usr/ports/databases/mysql56-client/
+make install clean
 
-mysql_enable="YES"
-		]]>
 		</screen>
 	</section>
 </chapter>
