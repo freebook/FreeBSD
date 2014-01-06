@@ -2,6 +2,12 @@
 	<title>MySQL</title>
 	<section id="mysql">
 		<title>Installation</title>
+		<para>FreeBSD 10.0 以上的版本使用 pkg 安装</para>
+		<screen>
+pkg search mysql
+pkg install mysql56-server		
+		</screen>
+		<para>FreeBSD 9.2或更早的版本</para>
 		<screen>
 		<![CDATA[
 pkg_add -r mysql56-server

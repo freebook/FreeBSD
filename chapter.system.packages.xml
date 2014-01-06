@@ -418,6 +418,36 @@ typescript message[]
 			</screen>
 		</section>
 	</section>
+	<section id="pkg.faq">
+		<title>FAQ</title>
+		<section>
+			<title>Shared object "libarchive.so.5" not found, required by "pkg"</title>
+			<para>问题出现在从FreeBSD 9.2 升级到 FreeBSD 10.0，升级pkg可以解决</para>
+			<screen>
+# pkg-static upgrade
+			</screen>
+		</section>
+		<section>
+			<title>pkg: PACKAGESITE in pkg.conf is deprecated. Please create a repository configuration file</title>
+			<para>编辑下面的文件</para>
+			<screen>
+# cat /usr/local/etc/pkg.conf                                                                                                                                                                                                                           [0]
+#packagesite: http://pkg.FreeBSD.org/freebsd:9:x86:64/latest
+PACKAGESITE	    : http://pkg.freebsd.org/${ABI}/latest
+			</screen>
+			<para>到 http://pkg.freebsd.org/ 查找适合你版本的URL</para>
+			<screen>
+# cat /usr/local/etc/pkg.conf                                                                                                                                                                                                                           [0]
+#packagesite: http://pkg.FreeBSD.org/freebsd:9:x86:64/latest
+#PACKAGESITE	    : http://pkg.freebsd.org/${ABI}/latest
+PACKAGESITE	    : http://pkg.freebsd.org/freebsd:10:x86:64/latest			
+			</screen>
+			<para>更新pkg</para>
+			<screen>
+pkg update			
+			</screen>
+		</section>
+	</section>
 </chapter>
 
 <chapter id="editors">
