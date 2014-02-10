@@ -188,17 +188,19 @@ Preparing to download files...
 freebsd# freebsd-update install
 			</screen>
 		</section>
+	</section>
+	<section id="freebsd.ports">
+		<title>ports</title>
 		<section>
 			<title>update ports</title>
 			<para>update your port tree by typing following commands:</para>
 			<screen>
 # portsnap fetch
+# portsnap extract
 # portsnap update
 			</screen>
-		</section>
-	</section>
-	<section id="freebsd.ports">
-		<title>ports</title>
+			<para>首次运行 portsnap 需要执行 portsnap extract 这个步骤，之后不再需要,直接运行 portsnap update 即可</para>
+		</section>		
 		<section>
 			<title>install</title>
 			<screen>
