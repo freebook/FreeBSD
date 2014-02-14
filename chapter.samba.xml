@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="samba">
+	<title>samba</title>
+	<section id="samba.install">
+		<title>安装 Samba 服务器</title>
+		<para>安装环境 FreeBSD 10</para>
+		<screen>
+		<![CDATA[
+# pkg install samba41  
+		]]>
+		</screen>
+		<![CDATA[
+cat >> /etc/rc.conf <<EOF
+samba_enable="YES"
+EOF  
+		]]>
+		</screen>
+		<para>启动 Samba 服务器</para>
+		<screen>
+# /usr/local/etc/rc.d/samba_server onestart 		
+		</screen>
+	</section>
+	<section id="samba.conf">
+		<title>配置 Samba 服务器</title>
+		<para>运行下面命令行会创建 /usr/local/etc/smb4.conf 配置文件</para>
+		<screen>
+		<![CDATA[
+# samba-tool domain provision
+Realm [FREEBSD.ORG]: 
+ Domain [FREEBSD]: 
+ Server Role (dc, member, standalone) [dc]: 
+ DNS backend (SAMBA_INTERNAL, BIND9_FLATFILE, BIND9_DLZ, NONE) [SAMBA_INTERNAL]: 
+ DNS forwarder IP address (write 'none' to disable forwarding) [202.45.84.58]: 
+Administrator password: 
+Retype password: 
+		]]>
+		</screen>
+	</section>	
+</chapter>
+ 
