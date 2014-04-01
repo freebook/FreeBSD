@@ -90,7 +90,8 @@ uid=1001(neo) gid=1001(neo) groups=1001(neo),0(wheel)
 		</screen>
 	</section>
 	<section id="sysinstall">
-		<title>sysinstall 工具</title>
+		<title>sysinstall，bsdinstall与 bsdconfig 工具</title>
+		<subtitle>从 FreeBSD 10 开始 sysinstall 被 bsdinstall 与 bsdconfig 所替代</subtitle>
 		<para>例如安装 FreeBSD src 源码包</para>
 		<screen>
 sysinstall -> Configure -> Distributions -> src -> ALL -> Install from a FreeBSD CD/DVD
