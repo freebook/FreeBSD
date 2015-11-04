@@ -1,5 +1,5 @@
 <!-- $LastChangedDate: 2012-11-16 16:09:35 +0800 (Fri, 16 Nov 2012) $ -->
-<part id="www">
+<part id="index"><?dbhtml dir="www" ?>
 	<title>Web Server</title>
 	&chapter.www.lighttpd.xml;
 	&chapter.www.nginx.xml;
