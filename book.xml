@@ -5,12 +5,8 @@
  -->
 <!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
 
-	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
-	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
-    <!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
-	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY % common.doctype.entity.xml            SYSTEM "../common/doctype.entity.xml">
+        %common.doctype.entity.xml;
 
 	<!ENTITY chapter.install.xml		SYSTEM "chapter.install.xml">
 	<!ENTITY chapter.system.xml			SYSTEM "chapter.system.xml">
@@ -48,13 +44,7 @@
 			</author>
 		</authorgroup>
 		<copyright>
-			<year>2008</year>
-			<year>2009</year>
-			<year>2010</year>
-			<year>2011</year>
-			<year>2012</year>
-			<year>2013</year>
-			<year>2014</year>
+			<year>2008-2017</year>
 			<holder>Copyright netkiller</holder>
 		</copyright>
 		<!-- 2008-5-24 -->
